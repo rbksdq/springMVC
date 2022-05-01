@@ -4,6 +4,7 @@
         xmlns:context="http://www.springframework.org/schema/context"
         xmlns:mvc="http://www.springframework.org/schema/mvc"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:tx="http://www.springframework.org/schema/tx"
         xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
@@ -16,8 +17,9 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
 
-
+    <tx:annotation-driven/>
     <context:component-scan base-package="controller"/>
+    <context:component-scan base-package="dao"/>
     <mvc:annotation-driven/>
 
     <mvc:annotation-driven enable-matrix-variables="true"/>
@@ -26,4 +28,35 @@
         <property name="suffix" value=".jsp"/>
     </bean>
     <!--<bean id="home" class="controller.ProductController"/>-->
+
+    <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" name="ds">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/productdatabase" />
+        <property name="username" value="root"/>
+        <property name="password" value="Windo@123"/>
+    </bean>
+
+    <bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" name="factory">
+        <property name="dataSource" ref="ds"></property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+
+        <property name="annotatedClasses">
+            <list>
+                <value>entities.Product</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.orm.hibernate5.HibernateTemplate" name="hibernateTemplate">
+        <property name="sessionFactory" ref="factory"></property>
+    </bean>
+    <bean class="org.springframework.orm.hibernate5.HibernateTransactionManager" name="transactionManager">
+        <property name="sessionFactory" ref="factory"></property>
+    </bean>
 </beans>
