@@ -29,6 +29,7 @@
                         </tr>
                     </c:forEach>
                   </tbody>
+
                 </table>
                 <div class="container text-center">
                     <a href="Product" class"btn btn-outline-success">Add Product</a>
